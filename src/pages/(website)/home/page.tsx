@@ -9,11 +9,13 @@ import WhatMake from "./_component/WhatMake";
 import Recenty from "./_component/Recenty";
 import WeedEducation from "./_component/WeedEducation";
 import Blog from "./_component/Blog";
+import MenuHome from "./_component/MenuHome";
 
 const HomePage = () => {
     return (
         <>
             <div>
+                <MenuHome />
                 <Banner />
                 <Services />
                 <BestProductDispensary />
@@ -24,7 +26,7 @@ const HomePage = () => {
                 {/* ***** */}
                 <WhatMake />
                 {/* ****** */}
-                <Recenty />
+                {/* <Recenty /> */}
                 {/* ****** */}
                 {/* ########### */}
                 <Blog />

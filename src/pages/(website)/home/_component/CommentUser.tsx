@@ -6,7 +6,7 @@ const CommentUser = (props: Props) => {
     return (
         <>
             {/* COMMENT */}
-            <div className="w-full text-left sm:-mt-[47px] hidden_scroll_x">
+            <div className="w-full text-left sm:-mt-[47px] hidden_scroll_x" id="comment-user">
                 <div className="lg:w-[1440px] mb:w-[342px] mx-auto flex justify-end">
                     <strong className="lg:w-[1320px] mb:w-full lg:text-[64px] mb:text-[32px] lg:leading-[70px] mb:leading-[38px] lg:tracking-[-4.7px] mb:tracking-[-1.9px]">
                         CUSTOMER TESTIMONIALS

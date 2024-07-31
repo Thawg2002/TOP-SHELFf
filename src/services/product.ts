@@ -19,6 +19,14 @@ export const getAllProducts = async (params?: any): Promise<any> => {
         return [];
     }
 };
+export const getRelatedProduct = async (id: string): Promise<any> => {
+    try {
+        const response = await instance.get(`/products/${id}/related`);
+        return response;
+    } catch (error) {
+        return [];
+    }
+};
 export const getProductById = async (id: number | string) => {
     try {
         const response = await instance.get(`/products/${id}`);

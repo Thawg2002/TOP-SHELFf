@@ -7,7 +7,10 @@ const HowToOrder = (props: Props) => {
     return (
         <>
             {/* HOW TO ORDER */}
-            <div className="w-full relative flex items-center flex-col lg:mt-[160px] mb:mt-[167px] lg:pb-16 bg-[#01100B]">
+            <div
+                className="w-full relative flex items-center flex-col lg:mt-[160px] mb:mt-[167px] lg:pb-16 bg-[#01100B]"
+                id="how-to-order"
+            >
                 {/* FEFER A FRIENDS */}
                 <div
                     className="lg:w-[1200px] mb:w-[342px] mb:h-[268px] lg:h-[342px] lg:-mt-7 grid place-items-center rounded-3xl -translate-y-1/2 

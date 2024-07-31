@@ -11,14 +11,21 @@ const ProductItem = ({ product: item }: Props) => {
             <div className="grid grid-cols-[100%] snap-center lg:auto-rows-[240px_auto] mb:auto-rows-[160px_auto] lg:gap-y-[25px] mb:gap-y-[27px] overflow-hidden h-full rounded-xl px-4 w-full">
                 {/* img */}
                 <div className="relative group w-full lg:h-[240px] mb:h-[160px] bg-[#f4f4f4] rounded-xl grid place-items-center">
-                    <img
-                        className="lg:w-[164px] mb:w-[120px] lg:h-[164px] mb:h-[120px]"
-                        src={item.image}
-                        alt=""
-                    />
-                    <button className="absolute scale-0 group-hover:scale-100 group-hover:translate-y-0 -translate-y-[200%] duration-200 z-[2] lg:w-[152px] mb:w-[136px] lg:h-[64px]  mb:h-[48px] rounded-[100px] border-none bg-[#1A1E2630] text-sm text-white backdrop-blur-md">
-                        Out Of Stock
-                    </button>
+                    <Link to={`/products/${item._id}`}>
+                        <img
+                            className="lg:w-[164px] mb:w-[120px] lg:h-[164px] mb:h-[120px]"
+                            src={item.image}
+                            alt=""
+                        />
+                    </Link>
+                    {item.countInStock <= 0 ? (
+                        <button className="absolute scale-0 group-hover:scale-100 group-hover:translate-y-0 -translate-y-[200%] duration-200 z-[2] lg:w-[152px] mb:w-[136px] lg:h-[64px]  mb:h-[48px] rounded-[100px] border-none bg-[#1A1E2630] text-sm text-white backdrop-blur-md">
+                            Out Of Stock
+                        </button>
+                    ) : (
+                        ""
+                    )}
+
                     <section className="hidden absolute top-0 left-0 bg-[#F2BC1B] px-3 py-1.5 text-white">
                         $60 ounce
                     </section>
@@ -29,9 +36,11 @@ const ProductItem = ({ product: item }: Props) => {
                         <strong className="uppercase font-light lg:text-sm mb:text-xs text-center text-[#9D9EA2]">
                             FLOWER
                         </strong>
-                        <strong className="lg:text-lg text-center lg:line-clamp-2 mb:line-clamp-3 mb:text-base font-normal text-[#1A1E26]">
-                            {item.name}
-                        </strong>
+                        <Link to={`/products/${item._id}`}>
+                            <strong className="lg:text-lg text-center lg:line-clamp-2 mb:line-clamp-3 mb:text-base font-normal text-[#1A1E26]">
+                                {item.name}
+                            </strong>
+                        </Link>
                         <section className="lg:w-[163px] mb:w-[131px] h-[21px] mb:translate-y-0.5 lg:translate-y-0 *:lg:text-sm *:mb:text-xs flex justify-between items-start">
                             <div className="flex items-start">
                                 <svg
@@ -71,12 +80,18 @@ const ProductItem = ({ product: item }: Props) => {
                             <button>1/2lb</button>
                             <button>1/4lb</button>
                         </div>
-                        <Link
-                            to={`/products/${item._id}`}
-                            className="bg-[#17AF26] lg:w-[128px] mb:w-[118px] lg:mt-[11px] mb:mt-[14.5px] h-[40px] grid place-items-center rounded-[100px] lg:text-sm mb:text-xs text-white"
-                        >
-                            Add to Cart
-                        </Link>
+                        {item?.countInStock <= 0 ? (
+                            <button className="bg-[#838383] lg:w-[128px] mb:w-[118px] lg:mt-[11px] mb:mt-[14.5px] h-[40px] grid place-items-center rounded-[100px] lg:text-sm mb:text-xs text-white">
+                                Add to Cart
+                            </button>
+                        ) : (
+                            <Link
+                                to={`/products/${item._id}`}
+                                className="bg-[#17AF26] lg:w-[128px] mb:w-[118px] lg:mt-[11px] mb:mt-[14.5px] h-[40px] grid place-items-center rounded-[100px] lg:text-sm mb:text-xs text-white"
+                            >
+                                <button>Add to Cart</button>
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>

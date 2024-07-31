@@ -201,6 +201,17 @@ const Signup = () => {
                                 )}
                             </button>
                         </div>
+                        <div className="text-center">
+                            <h5>or login </h5>
+                            <div className="mt-2">
+                                <a href="/api/v1/auth/google">
+                                    <i className="fa-brands fa-google text-blue-500 text-[30px] mx-4"></i>
+                                </a>
+                                <a href="">
+                                    <i className="fa-brands fa-facebook  text-blue-500 text-[30px] mx-4"></i>
+                                </a>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>

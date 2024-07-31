@@ -7,7 +7,10 @@ const Recenty = (props: Props) => {
     return (
         <>
             {/* RECENTY */}
-            <div className="lg:w-[1200px] mx-auto sm:w-[95vw] mb:w-[342px] flex flex-col lg:mt-[20.5px] lg:pt-24 mb:pt-[39px]">
+            <div
+                className="lg:w-[1200px] mx-auto sm:w-[95vw] mb:w-[342px] flex flex-col lg:mt-[20.5px] lg:pt-24 mb:pt-[39px]"
+                id="recently"
+            >
                 <strong className="lg:text-[64px] mb:text-[32px] lg:leading-[70px] mb:leading-[40px] lg:tracking-[-4.5px] mb:tracking-[-1.8px]">
                     RECENTLY ADDED
                 </strong>

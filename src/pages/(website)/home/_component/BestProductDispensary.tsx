@@ -6,7 +6,10 @@ const BestProductDispensary = (props: Props) => {
     return (
         <>
             {/*best dispensary*/}
-            <div className="w-full text-center lg:py-[120px] mb:pt-16 mb:pb-[42px]">
+            <div
+                className="w-full text-center lg:py-[120px] mb:pt-16 mb:pb-[42px]"
+                id="best-product-dispensary"
+            >
                 <div className="lg:w-[948px] mx-auto mb:w-[342px]">
                     <strong className="lg:text-[64px] mb:text-[32px] lg:leading-[70px] mb:leading-[38.5px] lg:tracking-[-4.8px] mb:tracking-[-1.8px]">
                         BEST DISPENSARY TO BUY WEED ONLINE IN CANADA

@@ -330,7 +330,9 @@ const ProductAddPage = () => {
                                     </div>
                                     <FormControl>
                                         <Switch
+                                            id="airplane-mode"
                                             checked={field.value}
+                                            // className="{field.value}"
                                             onCheckedChange={field.onChange}
                                         />
                                     </FormControl>

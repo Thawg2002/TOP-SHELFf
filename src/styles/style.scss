@@ -1,5 +1,8 @@
 @use "_mixin" as m;
 $font-poppins: "Poppins", sans-serif;
+html {
+    scroll-behavior: smooth;
+}
 
 body {
     font-family: $font-poppins;
@@ -61,7 +64,7 @@ img {
             display: flex;
         }
     }
-   
+
     &__link {
         font-size: 18px;
         display: block;

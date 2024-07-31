@@ -8,6 +8,7 @@ import ProductManagement from "@/pages/(dashboard)/product/page";
 import Signin from "@/pages/(website)/(auth)/Signin";
 import Signup from "@/pages/(website)/(auth)/Signup";
 import NotFound from "@/pages/(website)/404/page";
+import AboutPage from "@/pages/(website)/about/page";
 import CartUser from "@/pages/(website)/cart/page";
 import CheckoutPage from "@/pages/(website)/checkout/page";
 import HomePage from "@/pages/(website)/home/page";
@@ -26,9 +27,11 @@ const Router = () => {
                     <Route path="products" element={<ShopPage />} />
                     <Route path="cart" element={<CartUser />} />
                     <Route path="checkout" element={<CheckoutPage />} />
+                    <Route path="about" element={<AboutPage />} />
                 </Route>
                 <Route path="signin" element={<Signin />} />
                 <Route path="signup" element={<Signup />} />
+               
                 <Route path="admin" element={<LayoutAdmin />}>
                     <Route path="products" element={<ProductManagement />} />
                     <Route path="products/add" element={<ProductAddPage />} />

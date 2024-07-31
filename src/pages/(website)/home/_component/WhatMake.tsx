@@ -14,7 +14,10 @@ const WhatMake = (props: Props) => {
     return (
         <>
             {/* WHAT MAKE */}
-            <div className="w-full flex justify-center lg:mt-[118px] mb:mt-[77.5px]">
+            <div
+                className="w-full flex justify-center lg:mt-[118px] mb:mt-[77.5px]"
+                id="what-make"
+            >
                 <div className="lg:w-[1200px] mb:w-[342px] flex flex-col">
                     {/* TEXT */}
                     <div className="lg:w-[789px] flex flex-col">

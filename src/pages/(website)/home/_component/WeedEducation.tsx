@@ -7,7 +7,10 @@ const WeedEducation = (props: Props) => {
     return (
         <>
             {/* WEED EDUCATION */}
-            <div className="w-full bg-[#F4F4F4] lg:pb-[300px] lg:pt-16 mb:pt-[50px] mb:pb-[236.5px] flex justify-center lg:mt-[100px]">
+            <div
+                className="w-full bg-[#F4F4F4] lg:pb-[300px] lg:pt-16 mb:pt-[50px] mb:pb-[236.5px] flex justify-center lg:mt-[100px]"
+                id="weed-education"
+            >
                 <div className="lg:w-[1200px] mb:w-[342px] pt-20">
                     <div className="lg:mb-8 mb:mb-6 flex justify-between items-center">
                         <strong className="lg:text-[32px] mb:text-2xl lg:tracking-[-1.7px] tracking-[-1.05px]">

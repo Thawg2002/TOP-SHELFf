@@ -5,6 +5,10 @@ import { message } from "antd";
 import { LoaderCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 const Signin = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
@@ -12,7 +16,7 @@ const Signin = () => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm();  
+    } = useForm();
     const { mutate, isPending } = useMutation({
         mutationFn: async (user: any) => {
             return await SigninUser(user);
@@ -25,7 +29,11 @@ const Signin = () => {
                     JSON.stringify(response?.data.user),
                 );
                 localStorage.setItem("accessToken", response?.data.accessToken);
-                document.cookie = `refreshToken=${response?.data.refreshToken}; path=/; secure; samesite=strict; expires=${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString()}`;
+                document.cookie = `refreshToken=${
+                    response?.data.refreshToken
+                }; path=/; secure; samesite=strict; expires=${new Date(
+                    Date.now() + 7 * 24 * 60 * 60 * 1000,
+                ).toUTCString()}`;
             }
 
             messageApi.open({
@@ -44,6 +52,20 @@ const Signin = () => {
     const onSubmit = async (data: any) => {
         mutate(data);
     };
+    // const handleLoginWithGoogle = async (credentialResponse: any) => {
+    //     // console.log("onSubmit", credentialResponse);
+    //     const newUser = jwtDecode(credentialResponse?.credential as any);
+    //     // console.log("newUser", newUser);
+    //     try {
+    //         const response = await axios.post(
+    //             "http://localhost:8080/api/v1//google/verify",
+    //             newUser,
+    //         );
+    //         console.log("response", response);
+    //     } catch (error) {
+    //         console.log("error", error);
+    //     }
+    // };
     return (
         <>
             {contextHolder}
@@ -121,6 +143,31 @@ const Signin = () => {
                                     <span> Sign in</span>
                                 )}
                             </button>
+                        </div>
+                        <div className="text-center">
+                            <h5>or login </h5>
+                            <div className="mt-2">
+                                {/* <a href="" onClick={handleLoginWithGoogle}> */}
+                                {/* <i className="fa-brands fa-google text-blue-500 text-[30px] mx-4"></i> */}
+                                {/* </a> */}
+                                <GoogleLogin
+                                    onSuccess={(credentialResponse) => {
+                                        console.log(credentialResponse);
+                                        const newUser = jwtDecode(
+                                            credentialResponse?.credential as any,
+                                        );
+                                        console.log("newUser", newUser);
+                                    }}
+                                    // onSuccess={handleLoginWithGoogle}
+                                    onError={() => {
+                                        console.log("Login Failed");
+                                    }}
+                                />
+
+                                <a href="local">
+                                    <i className="fa-brands fa-facebook  text-blue-500 text-[30px] mx-4"></i>
+                                </a>
+                            </div>
                         </div>
                     </form>
                 </div>

@@ -1,21 +1,13 @@
 import { logo } from "@/assets/img";
-import { getAllCategories } from "@/services/categories";
-import { useQuery } from "@tanstack/react-query";
-import { FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { DownOutlined, SmileOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Dropdown, Space } from "antd";
+import { FaUser } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import ListCategory from "./ListCategory";
 
 const Header = () => {
     const userString = localStorage.getItem("user");
     const user = userString ? JSON.parse(userString) : {};
-    // console.log("user", user);
-    const { data, isLoading, isError } = useQuery({
-        queryKey: ["categories"],
-        queryFn: getAllCategories,
-    });
-
     // Menu properties
     const items: MenuProps["items"] = [
         {
@@ -47,10 +39,7 @@ const Header = () => {
             danger: true,
             label: "Logout",
         },
-    ];  
-    if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>Error loading data</div>;
-    // console.log("data", data);
+    ];
 
     return (
         // <!-- header -->
@@ -162,24 +151,10 @@ const Header = () => {
                 </div>
             </div>
             {/* menu */}
-            <div className="w-full mb:hidden lg:block">
-                <div className="w-full flex justify-center items-center *:flex *:justify-center">
-                    <div className="gap-x-[49.5px] h-[56px] items-center">
-                        <Link to={"/category"}>Shop All</Link>
+            
 
-                        {/* {data?.categories?.map(
-                            (item: ICategory, index: any) => (
-                                <a href="" key={index}>
-                                    {item.name}
-                                </a>
-                            ),
-                        )} */}
-                        <a href="">Blog</a>
-                    </div>
-                </div>
-            </div>
             {/* form mobile */}
-            <div className="w-full *:h-[58px] lg:hidden mb:block w-full mb-0.5">
+            <div className="w-full *:h-[58px] lg:hidden mb:block  mb-0.5">
                 <form className="flex *:h-[36px] justify-center items-center gap-x-2">
                     <input
                         type="text"

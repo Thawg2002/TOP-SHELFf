@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ProductDetailRight = ({ product }: any) => {
     return (
@@ -228,9 +229,20 @@ const ProductDetailRight = ({ product }: any) => {
                                 </span>
                             </div>
                             {/* add cart */}
-                            <button className="lg:text-base mb:text-sm font-medium flex place-items-center gap-x-4 text-white bg-[#17AF26] rounded-[100px] lg:px-[30px] mb:px-[22px] lg:h-14 mb:h-12">
-                                <span>Add to Cart</span> | <span>$242.00</span>
-                            </button>
+                            {product.countInStock ? (
+                                <Link
+                                    to={""}
+                                    className="lg:text-base mb:text-sm font-medium flex place-items-center gap-x-4 text-white bg-[#17AF26] rounded-[100px] lg:px-[30px] mb:px-[22px] lg:h-14 mb:h-12"
+                                >
+                                    <span>Add to Cart</span> |{" "}
+                                    <span>$242.00</span>
+                                </Link>
+                            ) : (
+                                <button className="lg:text-base mb:text-sm font-medium flex place-items-center gap-x-4 text-white bg-[#17af266a] rounded-[100px] lg:px-[30px] mb:px-[22px] lg:h-14 mb:h-12">
+                                    <span>Add to Cart</span> |
+                                    <span>$242.00</span>
+                                </button>
+                            )}
                         </div>
                         {/* service , voucher */}
                         <section className="flex lg:mt-0 mt-0.5 flex-col pt-[23px] gap-y-[13px] *:flex *:items-center *:gap-x-2 *:lg:text-sm *:mb:text-xs *:text-[#46494F]">

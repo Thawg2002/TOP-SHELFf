@@ -1,37 +1,51 @@
-import React, { useEffect, useState } from "react";
-import ProductListWeb from "../../_components/ProductList";
-import { useParams } from "react-router-dom";
+import { getProductById, getRelatedProduct } from "@/services/product";
 import { useQuery } from "@tanstack/react-query";
-import { getAllProducts, getProductById } from "@/services/product";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import ProductListWeb from "../../_components/ProductList";
 import ProductDetailLeft from "./_components/product_left/page";
 import ProductDetailRight from "./_components/product_right/page";
 
 const DetailProduct = () => {
     const { id } = useParams<{ id: any }>();
 
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading, isError, error } = useQuery({
         queryKey: ["getProductById", id],
         queryFn: () => getProductById(id),
     });
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+    // const {
+    //     data: products,
+    //     isLoading: isLoadingGetAll,
+    //     isError: isErrgetAll,
+    //     error: errProductAll,
+    // } = useQuery({
+    //     queryKey: ["products"],
+    //     queryFn: getAllProducts,
+    // });
 
     const {
-        data: products,
-        isLoading: isLoadingGetAll,
-        isError: isErrgetAll,
+        data: relatedProduct,
+        isLoading: isLoadingRelated,
+        isError: isErrorRelated,
+        error: errorRelated,
     } = useQuery({
-        queryKey: ["products"],
-        queryFn: getAllProducts,
+        queryKey: ["relatedProducts", id],
+        queryFn: () => getRelatedProduct(id),
     });
-    if (isLoadingGetAll) return <div>Loading...</div>;
-    if (isErrgetAll) return <div>Error loading data</div>;
-    if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>Error loading data</div>;
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [id]);
 
+    // if (isLoadingGetAll) return <div>Loading...</div>;
+    // if (isErrgetAll) return <div>{errProductAll.message}</div>;
+    if (isLoading) return <div>Loading...</div>;
+    if (isError) return <div>{error.message}</div>;
+    if (isLoadingRelated) return <div>LoadingRelatedProduct...</div>;
+    if (isErrorRelated) return <div>{errorRelated.message}</div>;
     const product = data?.product;
+    // console.log("product", product);
+    // console.log("products", products?.data);
     return (
         <>
             <div>
@@ -50,7 +64,7 @@ const DetailProduct = () => {
                         <span className="lg:text-2xl text-xl lg:tracking-[-0.5px]">
                             Featured Product
                         </span>
-                        <ProductListWeb products={products} />
+                        <ProductListWeb products={relatedProduct} />
                     </div>
                 </main>
                 {/* show img when click */}

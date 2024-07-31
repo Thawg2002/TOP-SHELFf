@@ -62,7 +62,7 @@ const ProductDetailLeft = ({ product }: Props) => {
                     {product?.gallery?.map((item: string, index: number) => {
                         return (
                             <SwiperSlide
-                                className="cursor-pointer  lg:w-[64px] lg:h-[64px] border border-solid border-[#F4F4F4] flex justify-center items-center bg-[#F4F4F4]"
+                                className="cursor-pointer  lg:w-[64px] lg:h-[64px] border border-solid border-[#F4F4F4] flex justify-center items-center bg-[#F4F4F4] "
                                 key={index}
                             >
                                 <img

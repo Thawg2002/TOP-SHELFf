@@ -12,6 +12,7 @@ export interface IProduct {
     featured: boolean;
     countInStock: number;
     attributes?: Array<string>;
+    seller?: number;
 }
 export interface IData {
     products: IProduct[];
