@@ -5,15 +5,16 @@ import SideBarWeb from "./_components/SideBar";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
-import "swiper/css";
-import { IProduct } from "@/common/types/product";
-import ProductItem from "../_components/ProductItem";
 import { getAllCategories } from "@/services/categories";
-import { useEffect } from "react";
-import Contentratest from "./shop/_components/contentratest";
+import { useEffect, useRef, useState } from "react";
+import "swiper/css";
+import ProductItem from "../_components/ProductItem";
 type Props = {};
 
 const ShopPage = (props: Props) => {
+    const [categorifilter, setCategorifilter] = useState("");
+    const [inputPrice, setInputPrice] = useState(0);
+    const productListRef = useRef<HTMLDivElement>(null);
     const {
         data: products,
         isLoading,
@@ -35,7 +36,30 @@ const ShopPage = (props: Props) => {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
-
+    const onhandleCategories = async (
+        valueCategory: any,
+        inputValue: any,
+        verifyValue: any,
+    ) => {
+        try {
+            if (verifyValue == true) {
+                setCategorifilter(valueCategory);
+                setInputPrice(inputValue);
+            }
+            //  else {
+            //     setCategorifilter("");
+            //     setInputPrice(0);
+            // }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    // Tạo cuộn xuống khi nhấn vào apply ở sidebar
+    const handleScrollToProductList = () => {
+        if (productListRef.current) {
+            productListRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
     if (isLoadingCategory) return <div>LoadingCategory...</div>;
     if (isErrorCategory) return <div>{errorCategory.message}</div>;
     if (isLoading) return <div>Loading...</div>;
@@ -47,7 +71,11 @@ const ShopPage = (props: Props) => {
                 <div className="w-full lg:py-10 py-4 border pb-[199px]">
                     <div className="lg:container lg:mx-auto lg:w-[1315px] mb:w-full grid lg:grid-cols-[304px_978px] mb:grid-cols-[100%] *:w-full justify-between">
                         {/* filter */}
-                        <SideBarWeb category={category?.categories} />
+                        <SideBarWeb
+                            category={category?.categories}
+                            onchangeCategories={onhandleCategories}
+                            onScrollToProductList={handleScrollToProductList}
+                        />
                         {/* product */}
                         <div className="w-full flex flex-col mb:items-center lg:items-start">
                             {/* filter */}
@@ -116,7 +144,7 @@ const ShopPage = (props: Props) => {
                             </div>
                             {/* endfilter */}
                             {/* text giới thiệu */}
-                            <div className="lg:w-[864px] mb:w-[342px] lg:mt-9 lg:pb-8 mb:pb-6 mb:mt-6">
+                            {/* <div className="lg:w-[864px] mb:w-[342px] lg:mt-9 lg:pb-8 mb:pb-6 mb:mt-6">
                                 <span className="lg:text-xl mb:text-base text-[#17AF26]">
                                     Cannabis
                                 </span>
@@ -138,7 +166,7 @@ const ShopPage = (props: Props) => {
                                     high-quality flowers at the best prices
                                     online with our unbeatable sales!
                                 </p>
-                            </div>
+                            </div> */}
                             {/* end giới thiệu */}
 
                             {/* top best selling */}
@@ -173,7 +201,12 @@ const ShopPage = (props: Props) => {
                                 {/* </div> */}
                             </div>
                             {/* render products */}
-                            <ProductListWeb products={products} />
+                            <ProductListWeb
+                                products={products}
+                                category={categorifilter}
+                                price={inputPrice}
+                                ref={productListRef}
+                            />
 
                             {/* contentratest */}
                             {/* <Contentratest/> */}

@@ -1,15 +1,34 @@
-import type { RadioChangeEvent } from "antd";
-import { Radio } from "antd";
+import type { InputNumberProps, RadioChangeEvent } from "antd";
+import { Col, InputNumber, Radio, Row, Slider } from "antd";
 import { useState } from "react";
 type Props = {
     category: [];
+    onchangeCategories: Function;
+    onScrollToProductList: () => void; 
 };
 
-const SideBarWeb = ({ category }: Props) => {
-    const [value, setValue] = useState(null);
-    const onChange = (e: RadioChangeEvent) => {
-        console.log("radio checked", e.target.value);
-        setValue(e.target.value);
+const SideBarWeb = ({ category, onchangeCategories,onScrollToProductList  }: Props) => {
+    const [valueCategory, setvalueCategory] = useState();
+    const [inputValue, setInputValue] = useState(0);
+    const [verifyValue, setVerifyValue] = useState(false);
+    const onChangeCategory = (e: RadioChangeEvent) => {
+        // console.log("radio checked", e.target.value);
+        setvalueCategory(e.target.value);
+    };
+
+    const onChange: InputNumberProps["onChange"] = (newValue) => {
+        setInputValue(newValue as number);
+    };
+    const onhandleApply = () => {
+        setVerifyValue(true);
+        onchangeCategories(valueCategory, inputValue, verifyValue);
+        // tạo cuộn xuống productlist
+        onScrollToProductList();
+    };
+    const onhandClearFilter = () => {
+        setVerifyValue(false);
+        setInputValue(0);
+        setvalueCategory(undefined);
     };
     return (
         <>
@@ -25,8 +44,8 @@ const SideBarWeb = ({ category }: Props) => {
                             return (
                                 <li className="" key={item._id}>
                                     <Radio.Group
-                                        onChange={onChange}
-                                        value={value}
+                                        onChange={onChangeCategory}
+                                        value={valueCategory}
                                     >
                                         <Radio value={item._id}>
                                             {item.name}
@@ -47,11 +66,35 @@ const SideBarWeb = ({ category }: Props) => {
                         FILTER BY PRICE
                     </span>
                     <div className="flex justify-between *:px-2.5 my-5 *:py-1 *:bg-[#F4F4F4] *:rounded-[100px] *:text-xs">
-                        <div>$0</div>
-                        <div>$50.000.00</div>
+                        {/* // <input type="range" className="h-[2px] bg-black" /> */}
                     </div>
-                    <input type="range" className="h-[2px] bg-black" />
-                    <button className="w-[103px] mt-6 h-[40px] rounded-[1000px] bg-[#17AF26] text-white">
+                    <Row>
+                        <Col span={12}>
+                            <Slider
+                                min={0}
+                                max={200000}
+                                onChange={onChange}
+                                value={
+                                    typeof inputValue === "number"
+                                        ? inputValue
+                                        : 0
+                                }
+                            />
+                        </Col>
+                        <Col span={4}>
+                            <InputNumber
+                                min={1}
+                                max={20}
+                                style={{ margin: "0 16px" }}
+                                value={inputValue}
+                                onChange={onChange}
+                            />
+                        </Col>
+                    </Row>
+                    <button
+                        className="w-[103px] mt-6 h-[40px] rounded-[1000px] bg-[#17AF26] text-white"
+                        onClick={onhandleApply}
+                    >
                         Apply
                     </button>
                 </section>
@@ -136,7 +179,7 @@ const SideBarWeb = ({ category }: Props) => {
                     </ul>
                 </section> */}
                 {/* review */}
-                <section className="flex flex-col">
+                {/* <section className="flex flex-col">
                     <span className="text-[#717378] text-xs tracking-[1px]">
                         FILTER BY REVIEWS
                     </span>
@@ -467,9 +510,12 @@ const SideBarWeb = ({ category }: Props) => {
                             </div>
                         </li>
                     </ul>
-                </section>
+                </section> */}
                 {/* clear filters */}
-                <button className="bg-[#F3FBF4] rounded-[100px] text-[14px] leading-[21px] text-[#17AF26] mt-5 h-10 px-8">
+                <button
+                    className="bg-[#F3FBF4] rounded-[100px] text-[14px] leading-[21px] text-[#17AF26] mt-5 h-10 px-8"
+                    onClick={onhandClearFilter}
+                >
                     Clear Filters
                 </button>
             </div>
