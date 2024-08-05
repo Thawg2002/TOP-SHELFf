@@ -24,15 +24,18 @@ const ProductListWeb = forwardRef<HTMLDivElement, Props>(
                 item.category?.some((cate) => cate === category),
             );
         }
-
+        // {product.regular_price *
+        //     (1 - product.discount / 100)}
         // // Lọc sản phẩm dựa trên giá
         if (price != 0 && price != undefined) {
             console.log("price: " + price);
-            filteredProducts = filteredProducts?.filter(
-                (item: IProduct) =>
-                    item.regular_price >= 0 && item.regular_price <= price,
-            );
+            filteredProducts = filteredProducts?.filter((item: IProduct) => {
+                const discountedPrice =
+                    item.regular_price * (1 - item.discount / 100);
+                return discountedPrice >= 0 && discountedPrice <= price;
+            });
         }
+
         return (
             <div
                 ref={ref}

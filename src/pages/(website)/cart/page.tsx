@@ -1,321 +1,46 @@
 import Header from "@/components/Header";
 import React from "react";
+import Directional from "./_component/directional";
+import ListCart from "./_component/listcart";
+import useCart from "@/common/hooks/useCart";
+import { box_time, transaction_minus, truck_time } from "@/assets/img";
 
 type Props = {};
 
 const CartUser = (props: Props) => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    const { cart, isLoading, error } = useCart(user?._id);
+
+   
+
+    if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>Error loading cart data</p>;
+
+    if (
+        !cart?.cart?.cartData?.products ||
+        cart?.cart?.cartData?.products?.length === 0
+    ) {
+        return <p>Your cart is empty.</p>;
+    }
+    console.log("cart", cart);
+
     return (
         <>
             <div>
                 {/* header */}
                 {/* <Header /> */}
                 {/*router page */}
-                <div className="w-full lg:py-7 mb:py-[18px] bg-[#F4F4F4] grid place-items-center -mt-[1px]">
-                    <div className="flex -translate-x-[1px] items-center gap-x-4 text-sm">
-                        <div className="flex items-center gap-x-2">
-                            <img
-                                className="w-[30px] h-[30px] p-2 text-white bg-[#05422C] rounded-[50%]"
-                                src="../Images/cart_icon.png"
-                                alt=""
-                            />
-                            <span>Shopping Cart</span>
-                        </div>
-                        <div className="lg:w-[74.5px] mb:min-w-[39.5px] h-[1px] bg-[#C3D2CC]" />
-                        <div className="flex items-center gap-x-2">
-                            <img
-                                className="w-[30px] h-[30px] p-2 text-white bg-white rounded-[50%]"
-                                src="../Images/checkout.png"
-                                alt=""
-                            />
-                            <span className="hidden lg:block">Checkout</span>
-                        </div>
-                        <div className="lg:w-[74.5px] mb:min-w-[39.5px] h-[1px] bg-[#C3D2CC]" />
-                        <div className="flex items-center gap-x-2">
-                            <img
-                                className="w-[30px] h-[30px] p-2 text-white bg-white rounded-[50%]"
-                                src="../Images/order.png"
-                                alt=""
-                            />
-                            <span className="hidden lg:block">
-                                Order Complete
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <Directional />
                 {/* main cart */}
                 <main className="lg:w-[1170px] mb:w-[342px] lg:mt-8 mb:mt-6 mx-auto grid lg:grid-cols-[686px_420px] mb:grid-cols-[100%] justify-between *:w-full pb-10">
                     {/* left */}
                     <div>
-                        <span className="text-xl flex mb-[1px] items-center justify-between pb-6 border-b">
-                            Your Cart{" "}
-                            <p className="text-[#9D9EA2] lg:text-base  mb:text-sm">
-                                (3)
-                            </p>
-                        </span>
                         {/* list items */}
-                        <div className="flex flex-col border-b lg:pb-[22px] mb:pb-3">
-                            <section className="flex lg:mt-[23px] mb:mt-[15px] gap-x-4">
-                                <img
-                                    className="border rounded w-12 h-12 p-1"
-                                    src="../Images/img_product.png"
-                                    alt=""
-                                />
-                                {/* change quantity, name , price */}
-                                <div className="relative w-full flex flex-col *:justify-between gap-y-2.5 lg:gap-y-3">
-                                    <div className="lg:py-2 mb-0.5 lg:mb-0 flex lg:flex-row mb:flex-col lg:items-center gap-x-4">
-                                        <span className="text-[#9D9EA2] text-sm">
-                                            1x Khalifa Kush (AAAA)
-                                        </span>
-                                        <div className="relative lg:absolute lg:left-1/2 lg:-translate-x-[20.5%]">
-                                            <div className="lg:mt-0 mb:mt-[12.5px] flex items-center *:grid *:place-items-center *:lg:w-9 *:lg:h-9 *:mb:w-8 *:mb:h-8">
-                                                <button>
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width={12}
-                                                        height={12}
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth={2}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="lucide lucide-minus text-xs"
-                                                    >
-                                                        <path d="M5 12h14" />
-                                                    </svg>
-                                                </button>
-                                                <div className="bg-[#F4F4F4] text-xs rounded">
-                                                    2
-                                                </div>
-                                                <button>
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width={12}
-                                                        height={12}
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth={2}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="lucide lucide-plus text-xs"
-                                                    >
-                                                        <path d="M5 12h14" />
-                                                        <path d="M12 5v14" />
-                                                    </svg>
-                                                </button>
-                                                <span className="ml-3 text-sm">
-                                                    $120.00
-                                                </span>
-                                            </div>
-                                            {/* price */}
-                                            <span className="block absolute lg:hidden text-[#9D9EA2] text-sm top-5 right-0">
-                                                $240.00
-                                            </span>
-                                        </div>
-                                        {/* price */}
-                                        <span className="hidden lg:block text-[#9D9EA2] text-sm">
-                                            $240.00
-                                        </span>
-                                    </div>
-                                    <div className="lg:py-2 mb-0.5 lg:mb-0 flex lg:flex-row mb:flex-col lg:items-center gap-x-4">
-                                        <span className="text-[#9D9EA2] text-sm">
-                                            Add Integra Pack - 4g
-                                        </span>
-                                        <div className="relative lg:absolute lg:left-1/2 lg:-translate-x-[20.5%]">
-                                            <div className="lg:mt-0 mb:mt-[12.5px] flex items-center *:grid *:place-items-center *:lg:w-9 *:lg:h-9 *:mb:w-8 *:mb:h-8">
-                                                <button>
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width={12}
-                                                        height={12}
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth={2}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="lucide lucide-minus text-xs"
-                                                    >
-                                                        <path d="M5 12h14" />
-                                                    </svg>
-                                                </button>
-                                                <div className="bg-[#F4F4F4] text-xs rounded">
-                                                    2
-                                                </div>
-                                                <button>
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width={12}
-                                                        height={12}
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth={2}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="lucide lucide-plus text-xs"
-                                                    >
-                                                        <path d="M5 12h14" />
-                                                        <path d="M12 5v14" />
-                                                    </svg>
-                                                </button>
-                                                <span className="ml-3 text-sm">
-                                                    $2.00
-                                                </span>
-                                            </div>
-                                            {/* price */}
-                                            <span className="block absolute lg:hidden text-[#9D9EA2] text-sm top-5 right-0">
-                                                $2.00
-                                            </span>
-                                        </div>
-                                        {/* price */}
-                                        <span className="hidden lg:block text-[#9D9EA2] text-sm">
-                                            $240.00
-                                        </span>
-                                    </div>
-                                    {/* subtotal */}
-                                    <div className="w-full flex justify-between text-sm pt-4 lg:pt-4 border-t">
-                                        <span className="text-[#9D9EA2]">
-                                            Subtotal
-                                        </span>
-                                        <span>$245.00</span>
-                                    </div>
-                                </div>
-                            </section>
-                            <section className="flex items-center border-t lg:pt-6 mb:pt-[17px] lg:mt-[23px] mb:mt-[15px] gap-x-4">
-                                <img
-                                    className="border rounded w-12 h-12 p-1"
-                                    src="../Images/img_product.png"
-                                    alt=""
-                                />
-                                {/* change quantity, name , price */}
-                                <div className="relative w-full flex flex-col *:justify-between gap-y-2.5 lg:gap-y-3">
-                                    <div className="lg:py-2 mb-0.5 lg:mb-0 flex lg:flex-row mb:flex-col lg:items-center gap-x-4">
-                                        <span className="text-[#9D9EA2] text-sm">
-                                            1x Jungle Diamond (AA+)
-                                        </span>
-                                        <div className="relative lg:absolute lg:left-1/2 lg:-translate-x-[20.5%]">
-                                            <div className="lg:mt-0 mb:mt-[12.5px] flex items-center *:grid *:place-items-center *:lg:w-9 *:lg:h-9 *:mb:w-8 *:mb:h-8">
-                                                <button>
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width={12}
-                                                        height={12}
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth={2}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="lucide lucide-minus text-xs"
-                                                    >
-                                                        <path d="M5 12h14" />
-                                                    </svg>
-                                                </button>
-                                                <div className="bg-[#F4F4F4] text-xs rounded">
-                                                    2
-                                                </div>
-                                                <button>
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width={12}
-                                                        height={12}
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth={2}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="lucide lucide-plus text-xs"
-                                                    >
-                                                        <path d="M5 12h14" />
-                                                        <path d="M12 5v14" />
-                                                    </svg>
-                                                </button>
-                                                <span className="ml-3 text-sm">
-                                                    $200.00
-                                                </span>
-                                            </div>
-                                            {/* price */}
-                                            <span className="block absolute lg:hidden text-[#9D9EA2] text-sm top-5 right-0">
-                                                $200.00
-                                            </span>
-                                        </div>
-                                        {/* price */}
-                                        <span className="hidden lg:block text-[#9D9EA2] text-sm">
-                                            $200.00
-                                        </span>
-                                    </div>
-                                </div>
-                            </section>
-                            <section className="flex items-center border-t lg:pt-6 mb:pt-[17px] lg:mt-[23px] mb:mt-[15px] gap-x-4">
-                                <img
-                                    className="border rounded w-12 h-12 p-1"
-                                    src="../Images/img_product.png"
-                                    alt=""
-                                />
-                                {/* change quantity, name , price */}
-                                <div className="relative w-full flex flex-col *:justify-between gap-y-2.5 lg:gap-y-3">
-                                    <div className="lg:py-2 mb-0.5 lg:mb-0 flex lg:flex-row mb:flex-col lg:items-center gap-x-4">
-                                        <span className="text-[#9D9EA2] text-sm">
-                                            Shipwreck Edibles Gummy
-                                        </span>
-                                        <div className="relative lg:absolute lg:left-1/2 lg:-translate-x-[20.5%]">
-                                            <div className="lg:mt-0 mb:mt-[12.5px] flex items-center *:grid *:place-items-center *:lg:w-9 *:lg:h-9 *:mb:w-8 *:mb:h-8">
-                                                <button>
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width={12}
-                                                        height={12}
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth={2}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="lucide lucide-minus text-xs"
-                                                    >
-                                                        <path d="M5 12h14" />
-                                                    </svg>
-                                                </button>
-                                                <div className="bg-[#F4F4F4] text-xs rounded">
-                                                    2
-                                                </div>
-                                                <button>
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width={12}
-                                                        height={12}
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        strokeWidth={2}
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        className="lucide lucide-plus text-xs"
-                                                    >
-                                                        <path d="M5 12h14" />
-                                                        <path d="M12 5v14" />
-                                                    </svg>
-                                                </button>
-                                                <span className="ml-3 text-sm">
-                                                    $13.00
-                                                </span>
-                                            </div>
-                                            {/* price */}
-                                            <span className="block absolute lg:hidden text-[#9D9EA2] text-sm top-5 right-0">
-                                                $52.00
-                                            </span>
-                                        </div>
-                                        {/* price */}
-                                        <span className="hidden lg:block text-[#9D9EA2] text-sm">
-                                            $52.00
-                                        </span>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
+                        <ListCart
+                            cart={cart}
+                          
+                        />
                     </div>
                     {/* right */}
                     <div className="hidden lg:block">
@@ -325,14 +50,14 @@ const CartUser = (props: Props) => {
                                     <span className="text-[#9D9EA2]">
                                         Subtotal{" "}
                                     </span>
-                                    <p>$497.00</p>
+                                    <p>${cart?.cart?.finalTotalPrice}</p>
                                 </section>
-                                <section className="flex justify-between text-sm">
+                                {/* <section className="flex justify-between text-sm">
                                     <span className="text-[#9D9EA2]">
                                         Discount{" "}
                                     </span>
                                     <p>$0.0</p>
-                                </section>
+                                </section> */}
                                 <section className="flex justify-between text-sm">
                                     <span className="text-[#9D9EA2]">
                                         Shipping Costs{" "}
@@ -420,7 +145,7 @@ const CartUser = (props: Props) => {
                             <div className="p-4 flex flex-col gap-y-3.5 border rounded-xl">
                                 <img
                                     className="w-12 h-12 p-3 rounded-[50%] bg-[#F2F6F4]"
-                                    src="../Images/transaction-minus.png"
+                                    src={transaction_minus}
                                     alt=""
                                 />
                                 <span className="lg:text-lg mb:text-base mt-0.5 text-[#1A1E26]">
@@ -435,7 +160,7 @@ const CartUser = (props: Props) => {
                             <div className="p-4 flex flex-col lg:gap-y-3.5 mb:gap-y-4 border rounded-xl">
                                 <img
                                     className="w-12 h-12 p-3 rounded-[50%] bg-[#F2F6F4]"
-                                    src="../Images/box-time.png"
+                                    src={box_time}
                                     alt=""
                                 />
                                 <span className="lg:text-lg mb:text-base lg:mt-0.5 text-[#1A1E26] lg:tracking-[0] mb:tracking-[0.1px]">
@@ -452,7 +177,7 @@ const CartUser = (props: Props) => {
                             <div className="p-4 flex flex-col gap-y-3.5 border rounded-xl">
                                 <img
                                     className="w-12 h-12 p-3 rounded-[50%] bg-[#F2F6F4]"
-                                    src="../Images/truck-time.png"
+                                    src={truck_time}
                                     alt=""
                                 />
                                 <p className="text-[#717378] lg:text-base mt-0.5 mb:text-sm leading-[29px]">

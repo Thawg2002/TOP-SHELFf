@@ -14,16 +14,6 @@ const DetailProduct = () => {
         queryFn: () => getProductById(id),
     });
 
-    // const {
-    //     data: products,
-    //     isLoading: isLoadingGetAll,
-    //     isError: isErrgetAll,
-    //     error: errProductAll,
-    // } = useQuery({
-    //     queryKey: ["products"],
-    //     queryFn: getAllProducts,
-    // });
-
     const {
         data: relatedProduct,
         isLoading: isLoadingRelated,
@@ -37,15 +27,12 @@ const DetailProduct = () => {
         window.scrollTo(0, 0);
     }, [id]);
 
-    // if (isLoadingGetAll) return <div>Loading...</div>;
-    // if (isErrgetAll) return <div>{errProductAll.message}</div>;
     if (isLoading) return <div>Loading...</div>;
     if (isError) return <div>{error.message}</div>;
     if (isLoadingRelated) return <div>LoadingRelatedProduct...</div>;
     if (isErrorRelated) return <div>{errorRelated.message}</div>;
     const product = data?.product;
-    // console.log("product", product);
-    // console.log("products", products?.data);
+
     return (
         <>
             <div>

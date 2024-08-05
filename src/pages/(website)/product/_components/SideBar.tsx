@@ -4,10 +4,14 @@ import { useState } from "react";
 type Props = {
     category: [];
     onchangeCategories: Function;
-    onScrollToProductList: () => void; 
+    onScrollToProductList: () => void;
 };
 
-const SideBarWeb = ({ category, onchangeCategories,onScrollToProductList  }: Props) => {
+const SideBarWeb = ({
+    category,
+    onchangeCategories,
+    onScrollToProductList,
+}: Props) => {
     const [valueCategory, setvalueCategory] = useState();
     const [inputValue, setInputValue] = useState(0);
     const [verifyValue, setVerifyValue] = useState(false);
@@ -72,7 +76,7 @@ const SideBarWeb = ({ category, onchangeCategories,onScrollToProductList  }: Pro
                         <Col span={12}>
                             <Slider
                                 min={0}
-                                max={200000}
+                                max={1000000}
                                 onChange={onChange}
                                 value={
                                     typeof inputValue === "number"

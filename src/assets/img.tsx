@@ -22,7 +22,11 @@ import register_icon from "@/assets/Images/register_icon.png";
 import bag_tag from "@/assets/Images/bag-tag.png";
 import credit_card from "@/assets/Images/credit-card.png";
 import wavy_check from "@/assets/Images/wavy-check.png";
-
+import transaction_minus from "@/assets/Images/transaction-minus.png";
+import box_time from "@/assets/Images/box-time.png";
+import truck_time from "@/assets/Images/truck-time.png";
+// transaction-minus.png
+// truck-time.png
 export {
     ImgProduct,
     logo,
@@ -46,4 +50,7 @@ export {
     bag_tag,
     credit_card,
     wavy_check,
+    transaction_minus,
+    box_time,
+    truck_time,
 };

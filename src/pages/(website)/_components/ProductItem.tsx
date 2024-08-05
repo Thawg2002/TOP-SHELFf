@@ -71,7 +71,8 @@ const ProductItem = ({ product: item }: Props) => {
                     <div className="flex flex-col gap-y-2 items-center lg:translate-y-0 mb:-translate-y-[2.5px]">
                         <div className="flex mb:text-sm lg:text-base lg:mb-3 mb:mb-2.5">
                             <span className=" text-[#EB2606]">
-                                $ {item.regular_price}
+                                $
+                                {item.regular_price * (1 - item.discount / 100)}{" "}
                             </span>
                             <span>/ gram</span>
                         </div>

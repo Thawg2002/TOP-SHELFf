@@ -1,7 +1,37 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import DescriptionId from "./descriptionId";
+import useCart from "@/common/hooks/useCart";
+import { toast } from "@/components/ui/use-toast";
 
 const ProductDetailRight = ({ product }: any) => {
+    const [quantity, setQuantity] = useState(1);
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const { addItem } = useCart(user?._id);
+    const handleIncrease = () => {
+        setQuantity(quantity + 1);
+    };
+    const handleDecrease = () => {
+        setQuantity(quantity > 1 ? quantity - 1 : 1);
+    };
+    const onhandleAddItem = () => {
+        if (user?._id && product?._id) {
+            try {
+                addItem.mutate({
+                    userId: user._id,
+                    productId: product._id,
+                    quantity,
+                });
+                toast({
+                variant: "success",
+                title: "SUSSCESS.",
+            });
+            } catch (error) {
+                console.log("error", error);
+            }
+        } else {
+            console.log("User ID or Product ID is missing.");
+        }
+    };
     return (
         <>
             <div className="h-full w-full *:w-full lg:mt-0 mb:mt-[42px]">
@@ -22,11 +52,12 @@ const ProductDetailRight = ({ product }: any) => {
                         </div>
                         <div className="flex lg:items-center mb:items-end justify-between">
                             <span className="font-medium text-[#EB2606] lg:text-xl lg:tracking-[0.7px] mb:text-base flex items-center lg:gap-x-3 lg:mt-0.5 mb:gap-x-2">
+                                $
+                                {product.regular_price *
+                                    (1 - product.discount / 100)}{" "}
                                 <del className="font-light lg:text-sm mb:text-sm text-[#9D9EA2]">
                                     {product.regular_price}
                                 </del>
-                                {product.regular_price *
-                                    (1 - product.discount / 100)}
                             </span>
                             <section className="lg:w-[163px] mb:w-[157px] mb:mt-[8px] lg:mt-0 h-[21px] *:lg:text-sm *:mb:text-xs flex justify-between items-start">
                                 <div className="flex items-start lg:gap-x-0 mb:gap-x-1">
@@ -188,7 +219,7 @@ const ProductDetailRight = ({ product }: any) => {
                             {/* up , dow quantity */}
                             <div className="border lg:py-2.5 lg:pr-6 lg:pl-4 mb:py-1 mb:pl-2 mb:pr-[18px] *:text-xs flex items-center gap-x-3 rounded-xl">
                                 <div className="flex items-center *:w-9 *:h-9 gap-x-1 *:grid *:place-items-center">
-                                    <button>
+                                    <button onClick={handleDecrease}>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width={12}
@@ -204,8 +235,10 @@ const ProductDetailRight = ({ product }: any) => {
                                             <path d="M5 12h14" />
                                         </svg>
                                     </button>
-                                    <div className="bg-[#F4F4F4]">2</div>
-                                    <button>
+                                    <div className="bg-[#F4F4F4]">
+                                        {quantity}
+                                    </div>
+                                    <button onClick={handleIncrease}>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width={12}
@@ -230,16 +263,16 @@ const ProductDetailRight = ({ product }: any) => {
                             </div>
                             {/* add cart */}
                             {product.countInStock ? (
-                                <Link
-                                    to={""}
+                                <button
                                     className="lg:text-base mb:text-sm font-medium flex place-items-center gap-x-4 text-white bg-[#17AF26] rounded-[100px] lg:px-[30px] mb:px-[22px] lg:h-14 mb:h-12"
+                                    onClick={onhandleAddItem}
                                 >
                                     <span>Add to Cart</span> |{" "}
                                     <span>$242.00</span>
-                                </Link>
+                                </button>
                             ) : (
                                 <button className="lg:text-base mb:text-sm font-medium flex place-items-center gap-x-4 text-white bg-[#17af266a] rounded-[100px] lg:px-[30px] mb:px-[22px] lg:h-14 mb:h-12">
-                                    <span>Add to Cart</span> |
+                                    <span>Add to Cart(out of stock)</span> |
                                     <span>$242.00</span>
                                 </button>
                             )}
@@ -278,337 +311,7 @@ const ProductDetailRight = ({ product }: any) => {
                     </div>
                 </div>
                 {/* description */}
-                <div className="flex flex-col border-t lg:py-10 lg:mt-10 mb:py-[34px] mb:mt-8">
-                    {/* menu description */}
-                    <ul className="flex items-center justify-between border-b lg:pb-6 mb:pb-5 *:lg:w-[197.33px] *:mb:w-[106px] *:lg:py-2.5 *:mb:py-[7px] *:rounded-[100px] *:border *:place-items-center *:lg:text-base *:mb:text-xs">
-                        <button className="btn_show_description grid hover:border-[#05422C] border-[#05422C] text-[#05422C] hover:bg-[#F2F6F4] bg-[#F2F6F4]">
-                            Description
-                        </button>
-                        <button className="btn_show_review flex items-center justify-center gap-x-1 hover:border-[#05422C] hover:text-[#05422C] hover:bg-[#F2F6F4]">
-                            Reviews
-                            <p>(350)</p>
-                        </button>
-                        <button className="btn_show_refer grid hover:border-[#05422C] hover:text-[#05422C] hover:bg-[#F2F6F4]">
-                            Refer a Friend
-                        </button>
-                    </ul>
-                    {/* text description */}
-                    <div className="show_description">
-                        <section className="flex flex-col text-sm text-[#46494F] leading-[21px] gap-y-4 lg:py-6 mb:pt-[19px]">
-                            <p>
-                                Jungle Diamonds is a slightly indica dominant
-                                hybrid strain (60% indica/40% sativa) created
-                                through crossing the infamous Slurricane X
-                                Gorilla Glue #4 strains. Named for its gorgeous
-                                appearance and breeder, Jungle Diamonds is a
-                                favorite of indica and hybrid lovers alike
-                                thanks to its delicious taste and tingly,
-                                arousing high. Jungle Diamonds buds have
-                                sparkling oversized spade-shaped olive green
-                                nugs with vivid amber hairs and a thick frosty
-                                blanket of glittering tiny blue-tinted white
-                                crystal trichomes. As you pull apart each sticky
-                                little nugget, aromas of spicy mocha coffee and
-                                fruity herbs are released.{" "}
-                            </p>
-                            <p>
-                                The flavor is of sweet chocolate with hints of
-                                fresh ripe berries to it, too. The Jungle
-                                Diamonds high is just as delicious, with happy
-                                effects that will boost the spirits and kick
-                                negative thoughts and moods to the curb. You'll
-                                feel a tingly sense in your body from start to
-                                finish that serves to remove any aches or pains
-                                while leaving you pretty aroused at times. This
-                                is accompanied by a blissfully unfocused heady
-                                lift that leaves your head in the clouds without
-                                causing sedation. With these effects and its
-                                pretty high 17-24% THC level, Jungle Diamonds is
-                                ideal for experienced patients with chronic
-                                pain, cramps or muscle spasms and appetite loss
-                                or nausea.
-                            </p>
-                        </section>
-                    </div>
-                    {/* detail comment */}
-                    <section className="show_review hidden">
-                        <div className="flex flex-col text-sm text-[#46494F] leading-[21px] gap-y-4 lg:pt-6 mb:pt-5 mb:pb-0">
-                            {/* content comment 1 */}
-                            <div className="border rounded-2xl lg:p-6 mb:p-5">
-                                {/* user and time comment */}
-                                <div className="flex items-center *:flex *:items-center gap-x-4 border-b border-[#F4F4F4] pb-4 mb-4">
-                                    <img
-                                        width={36}
-                                        height={36}
-                                        src="../Images/vikki_user_icon.png"
-                                        alt=""
-                                    />
-                                    <strong className="text-base text-[#1A1E26] font-medium gap-x-4">
-                                        Vikki Starr{" "}
-                                        <span className="text-sm text-[#9D9EA2] font-light">
-                                            |
-                                        </span>{" "}
-                                        <span className="text-sm text-[#9D9EA2] font-light">
-                                            January 15, 2023
-                                        </span>
-                                    </strong>
-                                </div>
-                                {/* text comment */}
-                                <section className="flex flex-col gap-y-4">
-                                    <nav className="flex items-center gap-x-1">
-                                        <img src="../Images/star.png" alt="" />
-                                        <img src="../Images/star.png" alt="" />
-                                        <img src="../Images/star.png" alt="" />
-                                        <img src="../Images/star.png" alt="" />
-                                        <img src="../Images/star.png" alt="" />
-                                    </nav>
-                                    <p className="text-[#1A1E26] text-base">
-                                        Absolutely love TopShelfBC; affordable
-                                        on any budget and such fast delivery,
-                                        straight to my door! I recommend them to
-                                        all my friends and family for their 420
-                                        needs.
-                                    </p>
-                                </section>
-                            </div>
-                            {/* content comment 2 */}
-                            <div className="border rounded-2xl lg:p-6 mb:p-5">
-                                {/* user and time comment */}
-                                <div className="flex items-center *:flex *:items-center gap-x-4 border-b border-[#F4F4F4] pb-4 mb-4">
-                                    <img
-                                        width={36}
-                                        height={36}
-                                        src="../Images/vikki_user_icon.png"
-                                        alt=""
-                                    />
-                                    <strong className="text-base text-[#1A1E26] font-medium gap-x-4">
-                                        Terry Baskey{" "}
-                                        <span className="text-sm text-[#9D9EA2] font-light">
-                                            |
-                                        </span>{" "}
-                                        <span className="text-sm text-[#9D9EA2] font-light">
-                                            January 15, 2023
-                                        </span>
-                                    </strong>
-                                </div>
-                                {/* text comment */}
-                                <section className="flex flex-col gap-y-4">
-                                    <nav className="flex items-center gap-x-1">
-                                        <img src="../Images/star.png" alt="" />
-                                        <img src="../Images/star.png" alt="" />
-                                        <img src="../Images/star.png" alt="" />
-                                        <img src="../Images/star.png" alt="" />
-                                        <img src="../Images/star.png" alt="" />
-                                    </nav>
-                                    <p className="text-[#1A1E26] text-base">
-                                        Best damn place to buy your canabis at
-                                        great prices.
-                                    </p>
-                                </section>
-                            </div>
-                            {/*btn show more */}
-                            <div className="flex justify-center my-1">
-                                <button className="px-5 py-2 text-[#17AF26] text-sm rounded-[100px] border hover:bg-[#F9F9F9] cursor-pointer duration-300">
-                                    Show More
-                                </button>
-                            </div>
-                            {/* add comment */}
-                            <div className="flex flex-col gap-y-6 border-t lg:pt-7 lg:pb-[22px]">
-                                <strong className="lg:text-lg">
-                                    Add A Review
-                                </strong>
-                                <section className="flex item-center gap-x-4">
-                                    <span className="mt-0.5">Your rating</span>
-                                    <span>:</span>
-                                    <div className="flex item-center *:w-5 *:h-5 gap-x-1 *:cursor-pointer">
-                                        <img
-                                            src="../Images/star_no_color.png"
-                                            alt=""
-                                        />
-                                        <img
-                                            src="../Images/star_no_color.png"
-                                            alt=""
-                                        />
-                                        <img
-                                            src="../Images/star_no_color.png"
-                                            alt=""
-                                        />
-                                        <img
-                                            src="../Images/star_no_color.png"
-                                            alt=""
-                                        />
-                                        <img
-                                            src="../Images/star_no_color.png"
-                                            alt=""
-                                        />
-                                    </div>
-                                </section>
-                                <form className="-mt-1.5">
-                                    <span>Your Review</span>
-                                    <div className="overflow-hidden lg:p-4 rounded-lg border border-gray-200 shadow-sm focus-within:border-none focus-within:ring-1 focus-within:none mt-2">
-                                        <textarea
-                                            id="OrderNotes"
-                                            className="w-full resize-none outline-none border-none align-top focus:ring-0 sm:text-sm"
-                                            rows={3}
-                                            placeholder="Enter your review"
-                                            defaultValue={""}
-                                        />
-                                    </div>
-                                    <button className="px-10 py-4 bg-[#17AF26] rounded-[100px] text-base text-white mt-4">
-                                        Submit
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </section>
-                    {/* detail refer a friend */}
-                    <div className="show_refer hidden">
-                        <div className="rounded-2xl lg:px-6 lg:pt-7 lg:pb-4 mb:p-5 border flex flex-col gap-y-5 mt-5 mb-[23px]">
-                            <section className="border-b pb-6">
-                                <strong className="lg:text-xl mb:text-lg font-medium text-[#060709]">
-                                    Referral Program
-                                </strong>
-                                <p className="text-[#717378] lg:text-base mb:text-sm mt-4">
-                                    Absolutely love TopShelfBC; affordable on
-                                    any budget and such fast delivery, straight
-                                    to my door! I recommend them to all my
-                                    friends and family for their 420 needs.
-                                </p>
-                            </section>
-                            <section className="*:p-4 mt-1 *:bg-[#F3FBF4] flex flex-col gap-y-6 *:rounded-xl border-b pb-6">
-                                <div className="flex item-center justify-between gap-x-3">
-                                    {/* col line */}
-                                    <div className="w-0.5 bg-[#EB2606]" />
-                                    {/* text */}
-                                    <span className="flex flex-col gap-y-2 text-sm font-light">
-                                        Your Referral URL
-                                        <strong className="text-base font-medium">
-                                            Referral code is available only to
-                                            users with at least one order.
-                                        </strong>
-                                    </span>
-                                    {/* coppy */}
-                                    <div className="w-10 h-10 rounded-[50%] bg-white grid place-items-center">
-                                        <img
-                                            width={18}
-                                            height={18}
-                                            src="../Images/copy.png"
-                                            alt=""
-                                        />
-                                    </div>
-                                </div>
-                                {/* *** */}
-                                <div className="flex item-center justify-between gap-x-3">
-                                    {/* col line */}
-                                    <div className="w-0.5 bg-[#EB2606]" />
-                                    {/* text */}
-                                    <span className="flex flex-col gap-y-2 text-sm font-light">
-                                        Your Coupon Code to share
-                                        <strong className="text-base font-medium">
-                                            Referral code is available only to
-                                            users with at least one order.
-                                        </strong>
-                                    </span>
-                                    {/* coppy */}
-                                    <div className="w-10 h-10 rounded-[50%] bg-white grid place-items-center">
-                                        <img
-                                            width={18}
-                                            height={18}
-                                            src="../Images/copy.png"
-                                            alt=""
-                                        />
-                                    </div>
-                                </div>
-                            </section>
-                            {/* social */}
-                            <nav className="flex lg:flex-row mb:flex-col mt-1 *:lg:px-5 *:lg:py-4 *:gap-y-4 *:border *:rounded-[14px] justify-between lg:gap-x-6 *:grid *:place-items-center">
-                                {/* fb */}
-                                <div>
-                                    <button className="w-12 h-12 grid place-items-center bg-[#EDF4FF] rounded-[50%]">
-                                        <img
-                                            src="../Images/fb_icon.png"
-                                            alt=""
-                                        />
-                                    </button>
-                                    <span className="text-[#46494F] text-sm">
-                                        Share Via Facebook
-                                    </span>
-                                </div>
-                                {/* twitter */}
-                                <div>
-                                    <button className="w-12 h-12 grid place-items-center bg-[#EDF4FF] rounded-[50%]">
-                                        <img
-                                            src="../Images/twitter_icon.png"
-                                            alt=""
-                                        />
-                                    </button>
-                                    <span className="text-[#46494F] text-sm">
-                                        Share Via Twitter
-                                    </span>
-                                </div>
-                                {/* hotline */}
-                                <div>
-                                    <button className="w-12 h-12 grid place-items-center bg-[#EDF4FF] rounded-[50%]">
-                                        <img
-                                            src="../Images/hotline_icon.png"
-                                            alt=""
-                                        />
-                                    </button>
-                                    <span className="text-[#46494F] text-sm">
-                                        Share Via Whatsapp
-                                    </span>
-                                </div>
-                            </nav>
-                            <span className="text-[#C8C9CB] text-center mt-1">
-                                Or share via email
-                            </span>
-                            {/* contact to email */}
-                            <form>
-                                <div className="grid mt-1 lg:grid-cols-[42%_42%_auto] items-end justify-between gap-y-4">
-                                    <div className="flex flex-col items-start gap-y-2">
-                                        <span className="text-sm">Email</span>
-                                        <input
-                                            type="text"
-                                            placeholder="Enter your email"
-                                            className="border rounded-lg w-full p-3 outline-none placeholder:text-[#C8C9CB] text-[#C8C9CB] font-normal"
-                                        />
-                                    </div>
-                                    <div className="flex flex-col items-start gap-y-2">
-                                        <span className="text-sm">Name</span>
-                                        <input
-                                            type="text"
-                                            placeholder="Enter your name"
-                                            className="border rounded-lg p-3 w-full outline-none placeholder:text-[#C8C9CB] placeholder:font-normal text-[#C8C9CB] font-normal"
-                                        />
-                                    </div>
-                                    <button className="bg-[#F3FBF4] rounded-[50%] w-12 h-12 hover:scale-105 duration-300 cursor-pointer text-[#17AF26] text-3xl font-light grid place-items-center">
-                                        <img src="../Images/add.png" alt="" />
-                                    </button>
-                                    <div className="flex flex-col items-start gap-y-2">
-                                        <input
-                                            type="text"
-                                            placeholder="johndoe@example.com"
-                                            className="border w-full placeholder:text-black rounded-lg p-3 outline-none text-black font-normal"
-                                        />
-                                    </div>
-                                    <div className="flex flex-col items-start gap-y-2">
-                                        <input
-                                            type="text"
-                                            defaultValue="John Doe"
-                                            className="border w-full rounded-lg p-3 outline-none text-black font-normal"
-                                        />
-                                    </div>
-                                </div>
-                                {/*btn show more */}
-                                <div className="flex justify-start my-1.5">
-                                    <button className="px-[42px] py-4 bg-[#17AF26] rounded-[100px] text-base text-white mt-4">
-                                        Send Emails
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                <DescriptionId product={product} />
             </div>
         </>
     );
