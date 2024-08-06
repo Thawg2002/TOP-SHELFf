@@ -1,18 +1,72 @@
-import Header from "@/components/Header";
-import React from "react";
-import Directional from "./_component/directional";
-import ListCart from "./_component/listcart";
-import useCart from "@/common/hooks/useCart";
 import { box_time, transaction_minus, truck_time } from "@/assets/img";
-
+import useCart from "@/common/hooks/useCart";
+import { Checkbox } from "antd";
+import { useMemo, useState } from "react";
+import Directional from "./_component/directional";
+import { FaDeleteLeft } from "react-icons/fa6";
+import { MdDeleteSweep } from "react-icons/md";
 type Props = {};
 
 const CartUser = (props: Props) => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const [listchecked, setListChecked] = useState<string[]>([]);
+    // const [totalPrice, setTotalPrice] = useState<number>(0);
 
     const { cart, isLoading, error } = useCart(user?._id);
-
-   
+    const { decreaseQuantity, increaseQuantity } = useCart(user?._id);
+    // check từng san phẩm
+    const onChangeChecked = (e: any) => {
+        if (listchecked.includes(e.target.value)) {
+            // nếu checkbox đã được chọn thì tạo ra mảng mới k có cái id ý nữa ,sau đó set lại danh sách
+            const newList = listchecked.filter(
+                (item) => item !== e.target.value,
+            );
+            setListChecked(newList);
+        } else {
+            // nếu chwua thì thêm vào danh sách check
+            setListChecked([...listchecked, e.target.value]);
+        }
+    };
+    //Check toàn bộ
+    const onChangeCheckedAll = (e: any) => {
+        const newListCheck: any = [];
+        if (e.target.checked) {
+            // console.log("data", cart?.cart?.cartData?.products);
+            cart?.cart?.cartData?.products.map((item: any) =>
+                newListCheck.push(item as any),
+            );
+            setListChecked(newListCheck);
+        } else {
+            setListChecked([]);
+        }
+    };
+    console.log("listchecked", listchecked);
+    //Tính tổng giá những sản phẩm được checked
+    const totalPriceChecked = useMemo(() => {
+        const result = listchecked?.reduce((total, item: any) => {
+            return total + (item.finalPrice || 0);
+        }, 0);
+        return result;
+    }, [listchecked]);
+    // console.log("totalPriceChecked", totalPriceChecked);
+    //Thay đổi số lượng
+    const handleQuantity = async (message: string, productId: string) => {
+        try {
+            if (message === "decreaseQuantity") {
+                decreaseQuantity.mutate({
+                    userId: user._id,
+                    productId,
+                });
+            } else if (message === "increaseQuantity") {
+                increaseQuantity.mutate({
+                    userId: user._id,
+                    productId,
+                });
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
 
     if (isLoading) return <p>Loading...</p>;
     if (error) return <p>Error loading cart data</p>;
@@ -23,8 +77,6 @@ const CartUser = (props: Props) => {
     ) {
         return <p>Your cart is empty.</p>;
     }
-    console.log("cart", cart);
-
     return (
         <>
             <div>
@@ -37,10 +89,143 @@ const CartUser = (props: Props) => {
                     {/* left */}
                     <div>
                         {/* list items */}
-                        <ListCart
+                        {/* <ListCart
                             cart={cart}
                           
-                        />
+                        /> */}
+                        <span className="text-xl  mb-[1px] items-center justify-between pb-2 border-b">
+                            <p className="text-[#9D9EA2] lg:text-base  mb:text-sm flex flex-col mb-3">
+                                Your Cart ({cart?.cart?.totalQuantity})
+                            </p>
+                            <div className="flex justify-between">
+                                <div>
+                                    <Checkbox
+                                        onChange={onChangeCheckedAll}
+                                        checked={
+                                            listchecked?.length ===
+                                            cart?.cart?.cartData?.products
+                                                .length
+                                        }
+                                        className="text-[#9D9EA2]"
+                                    >
+                                        Select All
+                                    </Checkbox>
+                                </div>
+                                <div className="w-[30px] max-w-[30px]">
+                                    {listchecked?.length ===
+                                    cart?.cart?.cartData?.products.length ? (
+                                        <MdDeleteSweep className="text-[25px] text-red-500 cursor-pointer" />
+                                    ) : (
+                                        <MdDeleteSweep className="text-[25px] text-red-300" />
+                                    )}
+                                </div>
+                            </div>
+                        </span>
+                        <div className="flex flex-col border-b lg:pb-[22px] mb:pb-3">
+                            {cart?.cart?.cartData?.products?.map(
+                                (item: any, index: number) => {
+                                    return (
+                                        <section
+                                            className="flex lg:mt-[23px] mb:mt-[15px] gap-x-4 group relative "
+                                            key={index}
+                                        >
+                                            <Checkbox
+                                                value={item}
+                                                onChange={onChangeChecked}
+                                                checked={listchecked.includes(
+                                                    item,
+                                                )}
+                                            ></Checkbox>
+                                            <img
+                                                className="border rounded w-12 h-12 p-1"
+                                                src={item.image}
+                                                alt=""
+                                            />
+                                            {/* change quantity, name , price */}
+                                            <div className="relative w-full flex flex-col *:justify-between gap-y-2.5 lg:gap-y-3">
+                                                <div className="lg:py-2 mb-0.5 lg:mb-0 flex lg:flex-row mb:flex-col lg:items-center gap-x-4">
+                                                    <span className="text-[#9D9EA2] text-sm">
+                                                        {item.name}
+                                                    </span>
+                                                    <div className="relative lg:absolute lg:left-1/2 lg:-translate-x-[20.5%]">
+                                                        <div className="lg:mt-0 mb:mt-[12.5px] flex items-center *:grid *:place-items-center *:lg:w-9 *:lg:h-9 *:mb:w-8 *:mb:h-8">
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleQuantity(
+                                                                        "decreaseQuantity",
+                                                                        item.productId,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    width={12}
+                                                                    height={12}
+                                                                    viewBox="0 0 24 24"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth={
+                                                                        2
+                                                                    }
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    className="lucide lucide-minus text-xs"
+                                                                >
+                                                                    <path d="M5 12h14" />
+                                                                </svg>
+                                                            </button>
+                                                            <div className="bg-[#F4F4F4] text-xs rounded">
+                                                                {item.quantity}
+                                                            </div>
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleQuantity(
+                                                                        "increaseQuantity",
+                                                                        item.productId,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    width={12}
+                                                                    height={12}
+                                                                    viewBox="0 0 24 24"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth={
+                                                                        2
+                                                                    }
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    className="lucide lucide-plus text-xs"
+                                                                >
+                                                                    <path d="M5 12h14" />
+                                                                    <path d="M12 5v14" />
+                                                                </svg>
+                                                            </button>
+                                                            <span className="ml-3 text-sm">
+                                                                {item.price}
+                                                            </span>
+                                                        </div>
+                                                        {/* price */}
+                                                        <span className="block absolute lg:hidden text-[#9D9EA2] text-sm top-5 right-0">
+                                                            {item.price}
+                                                        </span>
+                                                    </div>
+                                                    {/* price */}
+                                                    <span className="hidden lg:block text-[#4a4c54] text-sm">
+                                                        {item.finalPrice}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="hidden group-hover:flex items-center justify-center w-[55px] max-w-[55px]">
+                                                <FaDeleteLeft className="w-[55px] max-w-[55px] mb-2 text-red-500 text-[20px]" />
+                                            </div>
+                                        </section>
+                                    );
+                                },
+                            )}
+                        </div>
                     </div>
                     {/* right */}
                     <div className="hidden lg:block">
@@ -50,7 +235,7 @@ const CartUser = (props: Props) => {
                                     <span className="text-[#9D9EA2]">
                                         Subtotal{" "}
                                     </span>
-                                    <p>${cart?.cart?.finalTotalPrice}</p>
+                                    <p>$ {totalPriceChecked}</p>
                                 </section>
                                 {/* <section className="flex justify-between text-sm">
                                     <span className="text-[#9D9EA2]">

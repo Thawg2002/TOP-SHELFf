@@ -1,38 +1,37 @@
 import useCart from "@/common/hooks/useCart";
 import type { CheckboxProps } from "antd";
 import { Checkbox } from "antd";
+import { useState } from "react";
 type Props = {
     cart: any;
 };
 
 const ListCart = ({ cart }: Props) => {
+    const [listchecked, setListChecked] = useState<string[]>([]);
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const { decreaseQuantity, increaseQuantity } = useCart(user?._id);
-    const handledecreaseQuantity = async (productId: any) => {
-        try {
-            // console.log("productId: ", productId);
-            decreaseQuantity.mutate({
-                userId: user._id,
-                productId,
-            });
-        } catch (error) {
-            console.log("error", error);
-        }
-    };
-    const handleincreaseQuantity = async (productId: any) => {
-        try {
-            // console.log("productId: ", productId);
-            increaseQuantity.mutate({
-                userId: user._id,
-                productId,
-            });
-        } catch (error) {
-            console.log("error", error);
-        }
-    };
     const onChange: CheckboxProps["onChange"] = (e) => {
         console.log(`checked = ${e.target.checked}`);
     };
+    //Thay đổi số lượng
+    const handleQuantity = async (message: string, productId: string) => {
+        try {
+            if (message === "decreaseQuantity") {
+                decreaseQuantity.mutate({
+                    userId: user._id,
+                    productId,
+                });
+            } else if (message === "increaseQuantity") {
+                increaseQuantity.mutate({
+                    userId: user._id,
+                    productId,
+                });
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+
     return (
         <>
             <span className="text-xl  mb-[1px] items-center justify-between pb-2 border-b">
@@ -75,7 +74,8 @@ const ListCart = ({ cart }: Props) => {
                                             <div className="lg:mt-0 mb:mt-[12.5px] flex items-center *:grid *:place-items-center *:lg:w-9 *:lg:h-9 *:mb:w-8 *:mb:h-8">
                                                 <button
                                                     onClick={() =>
-                                                        handledecreaseQuantity(
+                                                        handleQuantity(
+                                                            "decreaseQuantity",
                                                             item.productId,
                                                         )
                                                     }
@@ -100,7 +100,8 @@ const ListCart = ({ cart }: Props) => {
                                                 </div>
                                                 <button
                                                     onClick={() =>
-                                                        handleincreaseQuantity(
+                                                        handleQuantity(
+                                                            "increaseQuantity",
                                                             item.productId,
                                                         )
                                                     }
@@ -135,11 +136,6 @@ const ListCart = ({ cart }: Props) => {
                                             {item.finalPrice}
                                         </span>
                                     </div>
-                                    {/* subtotal */}
-                                    {/* <div className="w-full flex justify-between text-sm pt-4 lg:pt-4 border-t">
-                                <span className="text-[#9D9EA2]">Subtotal</span>
-                                <span>$245.00</span>
-                            </div> */}
                                 </div>
                             </section>
                         );
