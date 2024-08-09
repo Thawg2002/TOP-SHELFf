@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import Directional from "./_component/directional";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { MdDeleteSweep } from "react-icons/md";
+import { toast } from "@/components/ui/use-toast";
 type Props = {};
 
 const CartUser = (props: Props) => {
@@ -12,8 +13,14 @@ const CartUser = (props: Props) => {
     const [listchecked, setListChecked] = useState<string[]>([]);
     // const [totalPrice, setTotalPrice] = useState<number>(0);
 
-    const { cart, isLoading, error } = useCart(user?._id);
-    const { decreaseQuantity, increaseQuantity } = useCart(user?._id);
+    const {
+        cart,
+        isLoading,
+        error,
+        decreaseQuantity,
+        increaseQuantity,
+        removeItem,
+    } = useCart(user?._id);
     // check từng san phẩm
     const onChangeChecked = (e: any) => {
         if (listchecked.includes(e.target.value)) {
@@ -40,7 +47,6 @@ const CartUser = (props: Props) => {
             setListChecked([]);
         }
     };
-    console.log("listchecked", listchecked);
     //Tính tổng giá những sản phẩm được checked
     const totalPriceChecked = useMemo(() => {
         const result = listchecked?.reduce((total, item: any) => {
@@ -67,16 +73,46 @@ const CartUser = (props: Props) => {
             console.log("error", error);
         }
     };
+    // Xóa sản phẩm
+    const onhandleDelete = async (message: string, items: any) => {
+        // console.log("message", message);
+        // console.log("items", items);
 
+        try {
+            if (message === "deleteOneProduct") {
+                removeItem.mutate({
+                    userId: user._id,
+                    productIds: items.productId,
+                });
+                setListChecked([]);
+                toast({
+                    variant: "success",
+                    title: "Xóa thành công.",
+                });
+            } else if (message === "deleteAllProduct") {
+                for (const item of items) {
+                    await removeItem.mutateAsync({
+                        userId: user._id,
+                        productIds: item.productId,
+                    });
+                }
+                setListChecked([]);
+                toast({
+                    variant: "success",
+                    title: "Xóa thành công.",
+                });
+            }
+        } catch (error) {
+            console.log("error", error);
+            toast({
+                variant: "error",
+                title: "Đã xảy ra lỗi khi xóa sản phẩm.",
+            });
+        }
+    };
     if (isLoading) return <p>Loading...</p>;
     if (error) return <p>Error loading cart data</p>;
 
-    if (
-        !cart?.cart?.cartData?.products ||
-        cart?.cart?.cartData?.products?.length === 0
-    ) {
-        return <p>Your cart is empty.</p>;
-    }
     return (
         <>
             <div>
@@ -113,120 +149,155 @@ const CartUser = (props: Props) => {
                                 </div>
                                 <div className="w-[30px] max-w-[30px]">
                                     {listchecked?.length ===
-                                    cart?.cart?.cartData?.products.length ? (
-                                        <MdDeleteSweep className="text-[25px] text-red-500 cursor-pointer" />
+                                        cart?.cart?.cartData?.products.length ||
+                                    listchecked?.length > 1 ? (
+                                        <MdDeleteSweep
+                                            className="text-[25px] text-red-500 cursor-pointer"
+                                            onClick={() =>
+                                                onhandleDelete(
+                                                    "deleteAllProduct",
+                                                    listchecked,
+                                                )
+                                            }
+                                        />
                                     ) : (
                                         <MdDeleteSweep className="text-[25px] text-red-300" />
                                     )}
                                 </div>
                             </div>
                         </span>
-                        <div className="flex flex-col border-b lg:pb-[22px] mb:pb-3">
-                            {cart?.cart?.cartData?.products?.map(
-                                (item: any, index: number) => {
-                                    return (
-                                        <section
-                                            className="flex lg:mt-[23px] mb:mt-[15px] gap-x-4 group relative "
-                                            key={index}
-                                        >
-                                            <Checkbox
-                                                value={item}
-                                                onChange={onChangeChecked}
-                                                checked={listchecked.includes(
-                                                    item,
-                                                )}
-                                            ></Checkbox>
-                                            <img
-                                                className="border rounded w-12 h-12 p-1"
-                                                src={item.image}
-                                                alt=""
-                                            />
-                                            {/* change quantity, name , price */}
-                                            <div className="relative w-full flex flex-col *:justify-between gap-y-2.5 lg:gap-y-3">
-                                                <div className="lg:py-2 mb-0.5 lg:mb-0 flex lg:flex-row mb:flex-col lg:items-center gap-x-4">
-                                                    <span className="text-[#9D9EA2] text-sm">
-                                                        {item.name}
-                                                    </span>
-                                                    <div className="relative lg:absolute lg:left-1/2 lg:-translate-x-[20.5%]">
-                                                        <div className="lg:mt-0 mb:mt-[12.5px] flex items-center *:grid *:place-items-center *:lg:w-9 *:lg:h-9 *:mb:w-8 *:mb:h-8">
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleQuantity(
-                                                                        "decreaseQuantity",
-                                                                        item.productId,
-                                                                    )
-                                                                }
-                                                            >
-                                                                <svg
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    width={12}
-                                                                    height={12}
-                                                                    viewBox="0 0 24 24"
-                                                                    fill="none"
-                                                                    stroke="currentColor"
-                                                                    strokeWidth={
-                                                                        2
+                        {!cart?.cart?.cartData?.products ||
+                        cart?.cart?.cartData?.products?.length === 0 ? (
+                            <div className="text-center mt-5 text-gray-400">
+                                <span>Your cart is empty.</span>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col border-b lg:pb-[22px] mb:pb-3">
+                                {cart?.cart?.cartData?.products?.map(
+                                    (item: any, index: number) => {
+                                        return (
+                                            <section
+                                                className="flex lg:mt-[23px] mb:mt-[15px] gap-x-4 group relative "
+                                                key={index}
+                                            >
+                                                <Checkbox
+                                                    value={item}
+                                                    onChange={onChangeChecked}
+                                                    checked={listchecked.includes(
+                                                        item,
+                                                    )}
+                                                ></Checkbox>
+                                                <img
+                                                    className="border rounded w-12 h-12 p-1"
+                                                    src={item.image}
+                                                    alt=""
+                                                />
+                                                {/* change quantity, name , price */}
+                                                <div className="relative w-full flex flex-col *:justify-between gap-y-2.5 lg:gap-y-3">
+                                                    <div className="lg:py-2 mb-0.5 lg:mb-0 flex lg:flex-row mb:flex-col lg:items-center gap-x-4">
+                                                        <span className="text-[#9D9EA2] text-sm">
+                                                            {item.name}
+                                                        </span>
+                                                        <div className="relative lg:absolute lg:left-1/2 lg:-translate-x-[20.5%]">
+                                                            <div className="lg:mt-0 mb:mt-[12.5px] flex items-center *:grid *:place-items-center *:lg:w-9 *:lg:h-9 *:mb:w-8 *:mb:h-8">
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleQuantity(
+                                                                            "decreaseQuantity",
+                                                                            item.productId,
+                                                                        )
                                                                     }
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    className="lucide lucide-minus text-xs"
                                                                 >
-                                                                    <path d="M5 12h14" />
-                                                                </svg>
-                                                            </button>
-                                                            <div className="bg-[#F4F4F4] text-xs rounded">
-                                                                {item.quantity}
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        width={
+                                                                            12
+                                                                        }
+                                                                        height={
+                                                                            12
+                                                                        }
+                                                                        viewBox="0 0 24 24"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth={
+                                                                            2
+                                                                        }
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        className="lucide lucide-minus text-xs"
+                                                                    >
+                                                                        <path d="M5 12h14" />
+                                                                    </svg>
+                                                                </button>
+                                                                <div className="bg-[#F4F4F4] text-xs rounded">
+                                                                    {
+                                                                        item.quantity
+                                                                    }
+                                                                </div>
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleQuantity(
+                                                                            "increaseQuantity",
+                                                                            item.productId,
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        width={
+                                                                            12
+                                                                        }
+                                                                        height={
+                                                                            12
+                                                                        }
+                                                                        viewBox="0 0 24 24"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth={
+                                                                            2
+                                                                        }
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        className="lucide lucide-plus text-xs"
+                                                                    >
+                                                                        <path d="M5 12h14" />
+                                                                        <path d="M12 5v14" />
+                                                                    </svg>
+                                                                </button>
+                                                                <span className="ml-3 text-sm">
+                                                                    {item.price}
+                                                                </span>
                                                             </div>
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleQuantity(
-                                                                        "increaseQuantity",
-                                                                        item.productId,
-                                                                    )
-                                                                }
-                                                            >
-                                                                <svg
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    width={12}
-                                                                    height={12}
-                                                                    viewBox="0 0 24 24"
-                                                                    fill="none"
-                                                                    stroke="currentColor"
-                                                                    strokeWidth={
-                                                                        2
-                                                                    }
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    className="lucide lucide-plus text-xs"
-                                                                >
-                                                                    <path d="M5 12h14" />
-                                                                    <path d="M12 5v14" />
-                                                                </svg>
-                                                            </button>
-                                                            <span className="ml-3 text-sm">
+                                                            {/* price */}
+                                                            <span className="block absolute lg:hidden text-[#9D9EA2] text-sm top-5 right-0">
                                                                 {item.price}
                                                             </span>
                                                         </div>
                                                         {/* price */}
-                                                        <span className="block absolute lg:hidden text-[#9D9EA2] text-sm top-5 right-0">
-                                                            {item.price}
+                                                        <span className="hidden lg:block text-[#4a4c54] text-sm">
+                                                            {item.finalPrice}
                                                         </span>
                                                     </div>
-                                                    {/* price */}
-                                                    <span className="hidden lg:block text-[#4a4c54] text-sm">
-                                                        {item.finalPrice}
-                                                    </span>
                                                 </div>
-                                            </div>
-                                            <div className="hidden group-hover:flex items-center justify-center w-[55px] max-w-[55px]">
-                                                <FaDeleteLeft className="w-[55px] max-w-[55px] mb-2 text-red-500 text-[20px]" />
-                                            </div>
-                                        </section>
-                                    );
-                                },
-                            )}
-                        </div>
+                                                <div className="hidden group-hover:flex items-center justify-center w-[55px] max-w-[55px]">
+                                                    <FaDeleteLeft
+                                                        className="w-[55px] max-w-[55px] mb-2 text-red-500 text-[20px] cursor-pointer"
+                                                        onClick={() =>
+                                                            onhandleDelete(
+                                                                "deleteOneProduct",
+                                                                item,
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                            </section>
+                                        );
+                                    },
+                                )}
+                            </div>
+                        )}
                     </div>
+
                     {/* right */}
                     <div className="hidden lg:block">
                         <div className="w-full lg:p-6 mb:p-5 border rounded-2xl flex flex-col gap-y-[3px]">
@@ -288,7 +359,7 @@ const CartUser = (props: Props) => {
                             >
                                 Continue Shopping
                             </a>
-                            <button className="bg-[#C8C9CB] px-10 h-14 rounded-[100px] text-white flex my-[13px] gap-x-4 place-items-center justify-center">
+                            <button className="bg-[#17AF26] px-10 h-14 rounded-[100px] text-white flex my-[13px] gap-x-4 place-items-center justify-center">
                                 <span>Checkout</span>|<span>$547.00</span>
                             </button>
                             {/* payment */}

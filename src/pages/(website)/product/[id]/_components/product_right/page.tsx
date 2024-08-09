@@ -23,7 +23,7 @@ const ProductDetailRight = ({ product }: any) => {
                 });
                 toast({
                 variant: "success",
-                title: "SUSSCESS.",
+                title: "Thêm sản phẩm thành công.",
             });
             } catch (error) {
                 console.log("error", error);

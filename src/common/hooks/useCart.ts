@@ -109,6 +109,7 @@ const BASE_URL = "http://localhost:8080/api/v1";
 interface CartActionParams {
     userId: string;
     productId?: string;
+    productIds?: string[];
     quantity?: number;
     regular_price?: number;
     finalPrice?: number;
@@ -121,48 +122,6 @@ const fetchCart = async (userId: string) => {
     const { data } = await axios.get(`${BASE_URL}/carts/${userId}`);
     return data;
 };
-
-// const modifyCart = async (action: string, params: CartActionParams) => {
-//     // console.log(
-//     //     "Calling modifyCart with action:",
-//     //     action,
-//     //     "and params:",
-//     //     params,
-//     // );
-
-//     let url;
-//     switch (action) {
-//         case "add-to-cart":
-//             url = `${BASE_URL}/carts/add-to-cart`;
-//             break;
-//         case "update":
-//             url = `${BASE_URL}/carts/update`;
-//             break;
-//         case "remove":
-//             url = `${BASE_URL}/carts/remove`;
-//             break;
-//         case "updateQuantity":
-//             url = `${BASE_URL}/carts/update`;
-//             break;
-//         case "decrease":
-//             url = `${BASE_URL}/carts/decrease`;
-//             break;
-//         case "increase":
-//             url = `${BASE_URL}/carts/increase`;
-//             break;
-//         default:
-//             throw new Error(`Unknown action: ${action}`);
-//     }
-
-//     try {
-//         const { data } = await axios.post(url, params);
-//         console.log("data", data);
-//         return data.cart;
-//     } catch (error) {
-//         console.error("API call error:", error);
-//         throw error;
-//     }
-// };
 
 const modifyCart = async (action: string, params: CartActionParams) => {
     let url;
