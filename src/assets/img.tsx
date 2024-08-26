@@ -25,9 +25,18 @@ import wavy_check from "@/assets/Images/wavy-check.png";
 import transaction_minus from "@/assets/Images/transaction-minus.png";
 import box_time from "@/assets/Images/box-time.png";
 import truck_time from "@/assets/Images/truck-time.png";
+import mastercard1 from "@/assets/Images/mastercard_v1.png";
+import mastercard2 from "@/assets/Images/mastercard_v2.png";
+import mastercard3 from "@/assets/Images/mastercard_v3.png";
+import mastercard4 from "@/assets/Images/mastercard_v4.png";
+
 // transaction-minus.png
 // truck-time.png
 export {
+    mastercard1,
+    mastercard2,
+    mastercard3,
+    mastercard4,
     ImgProduct,
     logo,
     truckFast,

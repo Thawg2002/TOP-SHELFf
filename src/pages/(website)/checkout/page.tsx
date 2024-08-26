@@ -1,13 +1,8 @@
-import Header from "@/components/Header";
-import React from "react";
-
 type Props = {};
 
 const CheckoutPage = (props: Props) => {
     return (
         <div className="font-lexend">
-            {/* header */}
-            <Header />
             {/*router page */}
             <div className="w-full lg:py-7 mb:py-[18px] bg-[#F4F4F4] grid place-items-center -mt-[1px]">
                 <div className="flex -translate-x-[1px] items-center gap-x-4 text-sm">

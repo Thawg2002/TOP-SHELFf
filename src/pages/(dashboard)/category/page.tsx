@@ -24,7 +24,7 @@ const CategoryList = () => {
             }
         },
     });
-    const dataNewKey = data?.categories.map((item: any) => {
+    const dataNewKey = data?.categories?.map((item: any) => {
         return {
             key: item._id,
             ...item,

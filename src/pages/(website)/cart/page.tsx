@@ -1,4 +1,12 @@
-import { box_time, transaction_minus, truck_time } from "@/assets/img";
+import {
+    box_time,
+    mastercard1,
+    mastercard2,
+    mastercard3,
+    mastercard4,
+    transaction_minus,
+    truck_time,
+} from "@/assets/img";
 import useCart from "@/common/hooks/useCart";
 import { Checkbox } from "antd";
 import { useMemo, useState } from "react";
@@ -6,12 +14,12 @@ import Directional from "./_component/directional";
 import { FaDeleteLeft } from "react-icons/fa6";
 import { MdDeleteSweep } from "react-icons/md";
 import { toast } from "@/components/ui/use-toast";
+import { Link } from "react-router-dom";
 type Props = {};
 
 const CartUser = (props: Props) => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const [listchecked, setListChecked] = useState<string[]>([]);
-    // const [totalPrice, setTotalPrice] = useState<number>(0);
 
     const {
         cart,
@@ -54,6 +62,21 @@ const CartUser = (props: Props) => {
         }, 0);
         return result;
     }, [listchecked]);
+    // Tính giá vận chuyển
+    // const shippingCost = useMemo(() => {
+    //     if (totalPriceChecked === 0) {
+    //         return 0;
+    //     } else if (totalPriceChecked > 1000000) {
+    //         return 0;
+    //     } else {
+    //         return 50; // giả định giá trị vận chuyển là $50 cho đơn hàng dưới $100
+    //     }
+    // }, [totalPriceChecked]);
+
+    // Tính tổng giá trị thanh toán
+    // const totalPayment = useMemo(() => {
+    //     return totalPriceChecked + shippingCost;
+    // }, [totalPriceChecked, shippingCost]);
     // console.log("totalPriceChecked", totalPriceChecked);
     //Thay đổi số lượng
     const handleQuantity = async (message: string, productId: string) => {
@@ -308,21 +331,9 @@ const CartUser = (props: Props) => {
                                     </span>
                                     <p>$ {totalPriceChecked}</p>
                                 </section>
-                                {/* <section className="flex justify-between text-sm">
-                                    <span className="text-[#9D9EA2]">
-                                        Discount{" "}
-                                    </span>
-                                    <p>$0.0</p>
-                                </section> */}
-                                <section className="flex justify-between text-sm">
-                                    <span className="text-[#9D9EA2]">
-                                        Shipping Costs{" "}
-                                    </span>
-                                    <p>$50.00</p>
-                                </section>
                             </div>
                             {/* voucher */}
-                            <div className="flex items-center justify-between gap-x-3 *:h-12 *:border border-b py-[19px]">
+                            {/* <div className="flex items-center justify-between gap-x-3 *:h-12 *:border border-b py-[19px]">
                                 <input
                                     type="text "
                                     placeholder="Coupon code"
@@ -331,9 +342,9 @@ const CartUser = (props: Props) => {
                                 <button className="text-[#17AF26] font-medium bg-[#F3FBF4] whitespace-nowrap text-sm rounded-[100px] px-5 py-2">
                                     Apply Coupon
                                 </button>
-                            </div>
+                            </div> */}
                             {/* *** */}
-                            <div className="my-3">
+                            {/* <div className="my-3">
                                 <span
                                     role="progressbar"
                                     aria-labelledby="ProgressLabel"
@@ -345,22 +356,23 @@ const CartUser = (props: Props) => {
                                         style={{ width: "58%" }}
                                     />
                                 </span>
-                            </div>
+                            </div> */}
                             {/* *** */}
-                            <span className="flex mt-0.5 gap-x-[3px] items-center font-medium text-sm text-[#717378]">
+                            {/* <span className="flex mt-0.5 gap-x-[3px] items-center font-medium text-sm text-[#717378]">
                                 Get Free{" "}
                                 <p className="text-[#1A1E26]">Shipping</p> for
                                 orders over{" "}
                                 <p className="text-[#EB2606]">$100.00</p>
-                            </span>
-                            <a
-                                href=""
+                            </span> */}
+                            <Link
+                                to={"/"}
                                 className="font-semibold text-sm underline cursor-pointer my-1 tracking-[-0.1px]"
                             >
                                 Continue Shopping
-                            </a>
+                            </Link>
                             <button className="bg-[#17AF26] px-10 h-14 rounded-[100px] text-white flex my-[13px] gap-x-4 place-items-center justify-center">
-                                <span>Checkout</span>|<span>$547.00</span>
+                                <span>Checkout</span>|
+                                <span>${totalPriceChecked}</span>
                             </button>
                             {/* payment */}
                             <div className="flex flex-col gap-y-4 border-t mt-[3px] pt-[22px]">
@@ -368,22 +380,10 @@ const CartUser = (props: Props) => {
                                     SECURE PAYMENTS PROVIDED BY
                                 </span>
                                 <div className="flex items-center gap-x-3 *:cursor-pointer">
-                                    <img
-                                        src="../Images/mastercard_v1.png"
-                                        alt=""
-                                    />
-                                    <img
-                                        src="../Images/mastercard_v2.png"
-                                        alt=""
-                                    />
-                                    <img
-                                        src="../Images/mastercard_v3.png"
-                                        alt=""
-                                    />
-                                    <img
-                                        src="../Images/mastercard_v4.png"
-                                        alt=""
-                                    />
+                                    <img src={mastercard1} alt="" />
+                                    <img src={mastercard2} alt="" />
+                                    <img src={mastercard3} alt="" />
+                                    <img src={mastercard4} alt="" />
                                 </div>
                             </div>
                         </div>
@@ -514,22 +514,10 @@ const CartUser = (props: Props) => {
                                     SECURE PAYMENTS PROVIDED BY
                                 </span>
                                 <div className="flex items-center gap-x-3 *:cursor-pointer">
-                                    <img
-                                        src="../Images/mastercard_v1.png"
-                                        alt=""
-                                    />
-                                    <img
-                                        src="../Images/mastercard_v2.png"
-                                        alt=""
-                                    />
-                                    <img
-                                        src="../Images/mastercard_v3.png"
-                                        alt=""
-                                    />
-                                    <img
-                                        src="../Images/mastercard_v4.png"
-                                        alt=""
-                                    />
+                                    <img src={mastercard1} alt="" />
+                                    <img src={mastercard2} alt="" />
+                                    <img src={mastercard3} alt="" />
+                                    <img src={mastercard4} alt="" />
                                 </div>
                             </div>
                         </div>
